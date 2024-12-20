@@ -6,23 +6,37 @@ pub mod mcp;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Initialize logging
-    tracing_subscriber::fmt::init();
+  // Initialize logging
+  tracing_subscriber::fmt::init();
 
-    // Load environment variables
-    dotenv::dotenv().ok();
+  // Load environment variables
+  dotenv::dotenv().ok();
 
-    // Get configuration
-    let config = AppConfig::from_env()?;
+  // Debug: Print environment variables
+  info!(
+    "GITHUB_TOKEN: {}",
+    std::env::var("GITHUB_TOKEN").unwrap_or_default()
+  );
+  info!(
+    "GITHUB_REPOSITORY: {}",
+    std::env::var("GITHUB_REPOSITORY").unwrap_or_default()
+  );
+  info!(
+    "GITHUB_EVENT_ISSUE_NUMBER: {}",
+    std::env::var("GITHUB_EVENT_ISSUE_NUMBER").unwrap_or_default()
+  );
 
-    // Initialize MCP
-    let mcp = MCP::new(config).await?;
+  // Get configuration
+  let config = AppConfig::from_env()?;
 
-    // Process the issue
-    match mcp.process_issue().await {
-        Ok(_) => info!("Successfully processed issue"),
-        Err(e) => error!("Failed to process issue: {}", e),
-    }
+  // Initialize MCP
+  let mcp = MCP::new(config).await?;
 
-    Ok(())
+  // Process the issue
+  match mcp.process_issue().await {
+    Ok(_) => info!("Successfully processed issue"),
+    Err(e) => error!("Failed to process issue: {}", e),
+  }
+
+  Ok(())
 }
