@@ -1,0 +1,14 @@
+{
+  "name": "autocoder",
+  "module": "src/index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.33.1",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@modelcontextprotocol/server-github": "^0.6.2",
+    "zod": "^3.24.1"
+  }
+}

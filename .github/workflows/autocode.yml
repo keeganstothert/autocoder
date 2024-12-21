@@ -10,33 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
         with:
-          profile: minimal
-          toolchain: stable
-
-      - name: Cache cargo registry
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-
-      - name: Build autocode action
-        run: cargo build --release
+          bun-version: latest
 
       - name: Run autocode action
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
-          # GITHUB_REPOSITORY is automatically set by GitHub Actions
-        run: ./target/release/autocode-github-action
+        run: bun run src/index.ts
 
       - name: Handle errors
         if: failure()
