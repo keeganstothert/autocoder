@@ -5,11 +5,9 @@ export const ListToolsResponseSchema = z.object({
     z.object({
       name: z.string(),
       description: z.string(),
-      inputSchema: z.any(),
+      input_schema: z.any(),
     })
   ),
 });
 
-export const ToolCallResponseSchema = z.object({
-  content: z.array(z.any()),
-});
+export const ToolCallResponseSchema = z.any(); // Allow any response structure from GitHub MCP tools
