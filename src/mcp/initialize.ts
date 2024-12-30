@@ -1,8 +1,9 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { ListToolsResponseSchema } from "../schema";
+
 import type { Mcp } from "../types";
 import Anthropic from "@anthropic-ai/sdk";
+import getAvailableTools from "./availableTools";
 
 export default async function initialize() {
   const anthropic = new Anthropic({
@@ -28,27 +29,7 @@ export default async function initialize() {
   );
 
   await mcpClient.connect(transport);
-
-  // Get available tools from MCP server
-  const toolsResponse = await mcpClient.request(
-    {
-      method: "tools/list",
-    },
-    ListToolsResponseSchema
-  );
-
-  // Store tools for use with Claude
-  // Transform MCP server's inputSchema to Anthropic's input_schema format
-  const availableTools = toolsResponse.tools.map((tool) => ({
-    name: tool.name,
-    description: tool.description,
-    input_schema: tool.inputSchema,
-  }));
-
-  console.log(
-    "Connected to MCP server with tools:",
-    availableTools.map((t) => t.name).join(", ")
-  );
+  const availableTools = await getAvailableTools(mcpClient);
 
   return { client: mcpClient, availableTools, anthropic } as Mcp;
 }

@@ -1,7 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import getInitialPrompt from "./getInitialPrompt";
 import type { Mcp } from "../../types";
-import handleToolUse from "../../mcp/handleToolUse";
+import handleToolResults from "../../mcp/handleToolResults";
 
 export default async function processIssue(mcp: Mcp, issueNumber: string) {
   const initialPrompt = getInitialPrompt(issueNumber);
@@ -13,8 +14,8 @@ export default async function processIssue(mcp: Mcp, issueNumber: string) {
   ];
 
   let lastResponse = await mcp.anthropic.messages.create({
-    model: "claude-3-5-sonnet-20241022",
-    max_tokens: 1024,
+    model: process.env.MODEL!,
+    max_tokens: parseInt(process.env.MAX_TOKENS!, 10),
     messages: messages,
     tools: mcp.availableTools,
   });
@@ -30,41 +31,14 @@ export default async function processIssue(mcp: Mcp, issueNumber: string) {
   // Continue processing tool uses until there are none left
   while (true) {
     const toolUseBlocks = lastResponse.content.filter(
-      (block) => block.type === "tool_use"
+      (block): block is ToolUseBlock => block.type === "tool_use"
     );
 
     if (toolUseBlocks.length === 0) {
       break; // No more tool uses to process
     }
 
-    // Process each tool use in the response
-    for (const block of toolUseBlocks) {
-      const result = await handleToolUse(mcp, block);
-      messages.push({
-        role: "user",
-        content: [
-          {
-            type: "tool_result",
-            tool_use_id: block.id,
-            content: JSON.stringify(result),
-          },
-        ],
-      });
-
-      // Get Claude's response to the tool result
-      lastResponse = await mcp.anthropic.messages.create({
-        model: "claude-3-5-sonnet-20241022",
-        max_tokens: 1024,
-        messages: messages,
-        tools: mcp.availableTools,
-      });
-
-      // Add Claude's response to the conversation
-      messages.push({
-        role: "assistant",
-        content: lastResponse.content,
-      });
-    }
+    lastResponse = await handleToolResults(mcp, toolUseBlocks, messages);
   }
 
   return messages;
