@@ -3,6 +3,10 @@ on:
   issues:
     types: [labeled]
 
+env:
+  MODEL: "claude-3-5-sonnet-20241022"
+  MAX_TOKENS: 1024
+
 jobs:
   create-pr:
     runs-on: ubuntu-latest
@@ -20,6 +24,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_REPO_FULL: ${{ github.repository }}
         run: bun i && bun run src/index.ts
 
       - name: Handle errors

@@ -1,7 +1,6 @@
 export default function getInitialPrompt(issueNumber: string) {
   return `Use the get_issue tool to read issue #${issueNumber} from the repository keeganstothert/autocoder. Here are the parameters to use:
-    - owner: ${process.env.GITHUB_REPOSITORY_OWNER}
-    - repo: ${process.env.GITHUB_REPOSITORY_NAME}
+    - repo: ${process.env.GITHUB_REPO_FULL}
     - issue_number: ${issueNumber}
     
     Then analyze the issue content to understand what changes are needed.
