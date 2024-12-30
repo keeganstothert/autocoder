@@ -6,7 +6,7 @@ export default function getInitialPrompt(issueNumber: string) {
     
     Then analyze the issue content to understand what changes are needed.
     Before making any changes:
-    1. Use search_repositories, get_file_contents, and search_code as needed to get information about the repository structure
+    1. Use get_file_contents, and search_code as needed to get information about the repository structure
     2. use create_branch to create a new branch with an appropriate name based on the issue
     3. Use get_file_contents only on files that you know exist from steps 1 and 2
     

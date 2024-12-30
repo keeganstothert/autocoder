@@ -1,4 +1,3 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import type { ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import { ToolCallResponseSchema } from "../schema";
 import { handleError } from "../errors/handlers";

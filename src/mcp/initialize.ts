@@ -37,12 +37,12 @@ export default async function initialize() {
     ListToolsResponseSchema
   );
 
-  console.log("tool response", toolsResponse);
   // Store tools for use with Claude
+  // Transform MCP server's inputSchema to Anthropic's input_schema format
   const availableTools = toolsResponse.tools.map((tool) => ({
     name: tool.name,
     description: tool.description,
-    input_schema: tool.input_schema,
+    input_schema: tool.inputSchema,
   }));
 
   console.log(

@@ -7,6 +7,11 @@ async function main() {
 
   try {
     const issueNumber = process.env.GITHUB_EVENT_ISSUE_NUMBER!;
+    if (!issueNumber) {
+      throw new Error(
+        "GITHUB_EVENT_ISSUE_NUMBER environment variable is not set"
+      );
+    }
     const conversation = await processIssue(mcp, issueNumber);
 
     // Log the conversation to see what happened

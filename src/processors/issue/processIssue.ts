@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import getInitialPrompt from "./prompt";
+import getInitialPrompt from "./getInitialPrompt";
 import type { Mcp } from "../../types";
 import handleToolUse from "../../mcp/handleToolUse";
 

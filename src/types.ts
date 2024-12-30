@@ -1,7 +1,8 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
-export type Tool = {
+// Type for Anthropic's expected tool format
+export type AnthropicTool = {
   name: string;
   description: string;
   input_schema: any;
@@ -9,6 +10,6 @@ export type Tool = {
 
 export type Mcp = {
   client: Client;
-  availableTools: Tool[];
+  availableTools: AnthropicTool[];
   anthropic: Anthropic;
 };
