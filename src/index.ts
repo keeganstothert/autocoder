@@ -28,7 +28,12 @@ async function main() {
     console.error("Error:", error);
   } finally {
     await disconnect(mcp);
+    // Ensure process exits after completion
+    process.exit(0);
   }
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error("Error:", error);
+  process.exit(1);
+});

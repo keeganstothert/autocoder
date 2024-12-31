@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import type { Mcp } from "../types";
 import handleToolUse from "./handleToolUse";
+import createMessage from "../anthropic/createMessage";
 
 export default async function handleToolResults(
   mcp: Mcp,
@@ -23,12 +24,16 @@ export default async function handleToolResults(
       ],
     });
 
-    lastResponse = await mcp.anthropic.messages.create({
-      model: process.env.MODEL!,
-      max_tokens: parseInt(process.env.MAX_TOKENS!, 10),
-      messages: messages,
-      tools: mcp.availableTools,
-    });
+    lastResponse = await createMessage(
+      mcp,
+      {
+        model: process.env.MODEL!,
+        max_tokens: parseInt(process.env.MAX_TOKENS!, 10),
+        messages: messages,
+        tools: mcp.availableTools,
+      },
+      messages
+    );
 
     messages.push({
       role: "assistant",
